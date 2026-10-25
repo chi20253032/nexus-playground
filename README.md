@@ -14,6 +14,7 @@ A responsive, Material 3 Expressive-inspired playground for AI experiments, mini
 - JSON export for saved data
 - Reduced-motion preference support and keyboard focus styles
 - GitHub Pages deployment workflow
+- Expressive design tokens, responsive quick-action dock, shape-reactive states, and variable typography
 
 ## Run locally
 
@@ -32,6 +33,8 @@ Open `index.html` in a modern browser, or serve this directory with any static H
 - Do not put private API keys in `index.html`. To connect a real model, use a backend/serverless function that keeps secrets server-side.
 - Saved items and game scores are stored in the current browser only. Use the export button to download a JSON snapshot.
 - This is an original implementation inspired by Material 3 Expressive design principles; it is not an official Google product.
+
+- See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the design rationale and a transparent validation checklist.
 
 ## License
 
