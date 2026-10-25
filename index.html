@@ -191,6 +191,74 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* Ultra Expressive interaction layer: custom web controls, no browser-default visual language */
+:root{--ux-ease:cubic-bezier(.2,1.25,.35,1);--ux-ring:0 0 0 4px color-mix(in srgb,var(--p) 16%,transparent);--ux-outline:color-mix(in srgb,var(--p) 48%,var(--line))}
+::selection{background:var(--p);color:var(--onp)}
+:focus:not(:focus-visible){outline:none}
+:focus-visible{outline:3px solid var(--p)!important;outline-offset:3px!important;box-shadow:var(--ux-ring)}
+:where(button,input,textarea,select,[role=button],[tabindex]):disabled{opacity:.48;cursor:not-allowed;filter:saturate(.65)}
+:where(button,a,input,textarea,select){-webkit-tap-highlight-color:transparent}
+button{user-select:none}
+button:not(:disabled){transition:background .22s var(--motion-fast),color .2s,border-color .2s,box-shadow .24s,transform .28s var(--ux-ease),border-radius .3s var(--ux-ease)}
+.btn{min-height:44px;padding:12px 20px;letter-spacing:.005em;border-radius:17px 25px 25px 25px;font-size:13px;box-shadow:0 2px 0 color-mix(in srgb,var(--ink) 5%,transparent)}
+.btn.primary{background:var(--p);color:var(--onp);box-shadow:0 4px 0 color-mix(in srgb,var(--p) 25%,transparent)}
+.btn.primary:hover:not(:disabled){box-shadow:0 7px 0 color-mix(in srgb,var(--p) 22%,transparent),0 12px 24px color-mix(in srgb,var(--p) 20%,transparent);transform:translateY(-3px);border-radius:25px 17px 25px 25px}
+.btn.tonal{background:var(--sc);color:var(--ink)}
+.btn.outline{border:1.5px solid var(--ux-outline);background:color-mix(in srgb,var(--s) 80%,transparent)}
+.btn:active:not(:disabled),.iconbtn:active:not(:disabled),.chip:active:not(:disabled){transform:scale(.96);box-shadow:none}
+.iconbtn{border:1.5px solid var(--line);background:var(--s);box-shadow:0 3px 0 color-mix(in srgb,var(--ink) 6%,transparent);font-size:19px}
+.field,input:not([type=range]):not([type=checkbox]):not([type=radio]),textarea,select{border:1.5px solid var(--line);background:var(--s);color:var(--ink);border-radius:16px 22px 22px 22px;box-shadow:inset 0 1px 0 #ffffff20;transition:border-color .2s,box-shadow .2s,background .2s,border-radius .25s var(--ux-ease)}
+.field:hover,input:not([type=range]):not([type=checkbox]):not([type=radio]):hover,textarea:hover,select:hover{border-color:color-mix(in srgb,var(--p) 55%,var(--line))}
+.field:focus,input:not([type=range]):not([type=checkbox]):not([type=radio]):focus,textarea:focus,select:focus{border-color:var(--p);box-shadow:var(--ux-ring);border-radius:22px 16px 22px 22px}
+input::placeholder,textarea::placeholder{color:color-mix(in srgb,var(--muted) 78%,transparent);opacity:1}
+select{appearance:none!important;-webkit-appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23726780' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 13px center!important;background-size:18px!important;padding-right:42px!important;cursor:pointer}
+select option{background:var(--s);color:var(--ink)}
+input[type=range]{appearance:none;-webkit-appearance:none;height:7px;border-radius:99px;background:linear-gradient(90deg,var(--p),var(--e-lilac));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border:5px solid var(--s);border-radius:9px 50% 50% 50%;background:var(--p);box-shadow:0 1px 5px #0002;transition:transform .2s var(--ux-ease),border-radius .2s}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border:5px solid var(--s);border-radius:9px 50% 50% 50%;background:var(--p);box-shadow:0 1px 5px #0002}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.18) rotate(-8deg);border-radius:50% 50% 8px 50%}
+input[type=checkbox],input[type=radio]{accent-color:var(--p);width:18px;height:18px;cursor:pointer}
+label{cursor:pointer}
+.chip{min-height:38px;border:1.5px solid var(--line);transition:transform .25s var(--ux-ease),background .2s,border-radius .25s var(--ux-ease)}
+.chip:hover{transform:translateY(-2px);border-radius:15px 99px 99px 99px}
+.chip.active{background:var(--sc);border-color:transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--p) 15%,transparent)}
+.quick{border-width:1.5px;border-radius:15px 22px 22px 22px;transition:transform .25s var(--ux-ease),background .2s,border-radius .25s}
+.quick:hover{transform:translateX(3px);border-radius:22px 15px 22px 22px}
+.card,.stat,.profile,.democard{transition:box-shadow .28s,border-color .25s,transform .3s var(--ux-ease),border-radius .3s var(--ux-ease)}
+.card:hover{border-color:color-mix(in srgb,var(--p) 20%,var(--line))}
+.feature:hover{border-radius:22px 34px 26px 34px;box-shadow:var(--shadow-raised)}
+.tag{border-radius:9px 99px 99px 99px;letter-spacing:.06em}
+.progress{height:9px;background:var(--s3);border-radius:4px 99px 99px 99px}
+.progress span{background:linear-gradient(90deg,var(--p),color-mix(in srgb,var(--p) 50%,var(--e-lilac)));border-radius:4px 99px 99px 99px}
+.board .cell{border:1px solid color-mix(in srgb,var(--p) 10%,var(--line));box-shadow:0 3px 0 color-mix(in srgb,var(--ink) 5%,transparent);transition:transform .2s var(--ux-ease),background .2s,border-radius .25s}
+.board .cell:hover:not(:disabled){background:var(--pc);transform:translateY(-3px) rotate(-2deg);border-radius:24px 16px 24px 16px}
+.reaction{cursor:pointer;border-radius:30px 42px 30px 42px;transition:transform .25s var(--ux-ease),background .2s,border-radius .25s}
+.reaction:active{transform:scale(.99)}
+.messages,.content,.main{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--p) 45%,var(--s3)) transparent}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--p) 28%,var(--s3));border:3px solid var(--bg);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--p) 55%,var(--s3))}
+a{color:var(--p);text-underline-offset:3px;text-decoration-thickness:1.5px}
+a:hover{text-decoration-thickness:2px}
+:where(.card,.stat,.hero,.preview,.chatcard,.note,.democard){isolation:isolate}
+.toast{border-radius:17px 28px 28px 28px;box-shadow:var(--shadow-raised);backdrop-filter:blur(18px);max-width:calc(100vw - 32px);text-align:center}
+.empty{border:1.5px dashed var(--line);border-radius:26px 38px 26px 38px;background:color-mix(in srgb,var(--s) 48%,transparent)}
+/* Replace the browser's generic confirm prompt with an app-owned expressive dialog */
+.nexus-dialog-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:22px;background:#17102180;backdrop-filter:blur(9px);animation:dialog-fade .18s ease both}
+.nexus-dialog{width:min(100%,440px);padding:28px;background:var(--s);color:var(--ink);border:1px solid var(--line);border-radius:30px 42px 30px 42px;box-shadow:0 30px 90px #0004;animation:dialog-pop .32s var(--ux-ease) both}
+.nexus-dialog-mark{display:grid;place-items:center;width:52px;height:52px;margin-bottom:20px;border-radius:18px 18px 18px 6px;background:var(--tc);font-size:24px}
+.nexus-dialog h2{font-size:24px;margin:0 0 10px}
+.nexus-dialog p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 24px}
+.nexus-dialog-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.nexus-dialog-actions button{font:inherit;font-weight:750;font-size:13px;border:0;padding:12px 18px;border-radius:15px 24px 24px 24px;cursor:pointer}
+.nexus-dialog-cancel{background:var(--s2);color:var(--ink)}
+.nexus-dialog-confirm{background:var(--p);color:var(--onp)}
+@keyframes dialog-fade{from{opacity:0}to{opacity:1}}
+@keyframes dialog-pop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.nexus-dialog-backdrop,.nexus-dialog{animation:none!important}button,input,textarea,select,.card,.stat{transition:none!important}}
+@media(max-width:740px){.btn{min-height:44px}.nexus-dialog{padding:23px;border-radius:26px 34px 26px 34px}.nexus-dialog-actions button{flex:1}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar"><div class="brand"><div class="mark">N</div><div><b>NEXUS</b><small>PLAYGROUND</small></div></div><div><div class="nav-label">WORKSPACE</div><nav class="nav"><button class="active" data-page="home"><span class="ico">⌂</span>ホーム</button><button data-page="ai"><span class="ico">✳</span>AI ラボ <span class="tag live" style="margin-left:auto">BETA</span></button><button data-page="games"><span class="ico">♟</span>ゲームセンター</button><button data-page="lab"><span class="ico">◈</span>実験室</button><button data-page="prompts"><span class="ico">⌘</span>プロンプト工房</button><button data-page="library"><span class="ico">▤</span>マイライブラリ</button></nav></div><div class="side-bottom"><div class="nav-label">PREFERENCES</div><nav class="nav"><button data-page="settings"><span class="ico">⚙</span>設定</button></nav><div class="profile"><div class="avatar">✦</div><div><b style="font-size:12px">Explorer</b><small>Free playground plan</small></div></div></div></aside>
@@ -219,7 +287,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 <section class="page" id="page-library"><div class="intro"><div><div class="eyebrow">▤ YOUR COLLECTION</div><h1>マイライブラリ</h1><p>保存したプロンプトやテーマ。データはこのブラウザに保存されるよ。</p></div><button class="btn outline" id="export">データを書き出す ↓</button></div><div class="chips" style="margin-bottom:15px"><input class="field" id="libsearch" placeholder="ライブラリを検索…" style="max-width:300px"><button class="chip active" data-filter="all">すべて</button><button class="chip" data-filter="prompt">プロンプト</button><button class="chip" data-filter="theme">テーマ</button></div><div class="grid librarygrid" id="librarygrid"></div></section>
 <section class="page" id="page-settings"><div class="intro"><div><div class="eyebrow">⚙ MAKE IT COMFORTABLE</div><h1>設定</h1><p>自分の使い方に合わせてカスタマイズ。</p></div></div><div class="grid settingsgrid"><div class="card"><h3>表示とテーマ</h3><div class="settingrow"><div><strong>ダークモード</strong><small>暗い配色に切り替える</small></div><button class="switch" id="darkswitch" role="switch" aria-checked="false"></button></div><div class="settingrow"><div><strong>アニメーション</strong><small>画面遷移やホバーの動き</small></div><button class="switch on" id="motionswitch" role="switch" aria-checked="true"></button></div><div class="settingrow"><div><strong>通知メッセージ</strong><small>操作完了を知らせる</small></div><button class="switch on" id="toastSwitch" role="switch" aria-checked="true"></button></div></div><div class="card"><h3>データとプライバシー</h3><div class="settingrow"><div><strong>ローカル保存</strong><small>設定・スコア・ライブラリ</small></div><span class="tag live">有効</span></div><div class="settingrow"><div><strong>AI API接続</strong><small>現在はデモモード</small></div><span class="tag">未接続</span></div><div class="settingrow"><div><strong>保存データを削除</strong><small>このブラウザのデータを初期化</small></div><button class="btn outline small" id="clearData">リセット</button></div></div><div class="card" style="grid-column:1/-1"><h3>このサイトについて</h3><p class="muted" style="font-size:12px">NEXUS Playground — AI・ゲーム・実験のための小さな宇宙。Material 3 Expressiveの考え方に着想を得たオリジナル実装で、Google公式製品ではありません。</p><div class="chips"><span class="tag">V1.0.0</span><span class="tag">VANILLA HTML/CSS/JS</span><span class="tag">GITHUB PAGES READY</span></div></div></div></section>
 <footer class="footer"><span>© 2026 NEXUS Playground · Built for curious minds.</span><span>Material 3 Expressive inspired · <a href="https://m3.material.io/" target="_blank" rel="noopener" style="color:var(--p)">Design principles ↗</a></span></footer></div></main>
-<nav class="mobilenav"><button class="active" data-page="home"><span class="ico">⌂</span>ホーム</button><button data-page="ai"><span class="ico">✳</span>AIラボ</button><button data-page="games"><span class="ico">♟</span>ゲーム</button><button data-page="lab"><span class="ico">◈</span>実験室</button><button data-page="library"><span class="ico">▤</span>保存</button></nav><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+<nav class="mobilenav"><button class="active" data-page="home"><span class="ico">⌂</span>ホーム</button><button data-page="ai"><span class="ico">✳</span>AIラボ</button><button data-page="games"><span class="ico">♟</span>ゲーム</button><button data-page="lab"><span class="ico">◈</span>実験室</button><button data-page="library"><span class="ico">▤</span>保存</button></nav><div id="nexusDialogRoot" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s)),KEY="nexus-playground-v1";
@@ -275,9 +343,10 @@ function renderLibrary(){let q=($("#libsearch").value||"").toLowerCase(),items=s
 $("#libsearch").oninput=renderLibrary;$$("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;$$("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));renderLibrary()});
 $("#librarygrid").onclick=e=>{let b=e.target.closest("[data-delitem]");if(b){st.saved=st.saved.filter(x=>String(x.id)!==b.dataset.delitem);save();renderLibrary();toast("削除したよ");return}b=e.target.closest("[data-openitem]");if(!b)return;let x=st.saved.find(x=>String(x.id)===b.dataset.openitem);if(!x)return;if(x.type==="prompt"){nav("prompts");$("#promptout").textContent=x.data;toast("保存したプロンプトを表示したよ")}else{nav("lab");$("#hue").value=x.data.hue;$("#radius").value=x.data.rad;$("#space").value=x.data.space;$("#shape").value=x.data.shape;updateLab();toast("保存テーマを適用したよ")}};
 $("#export").onclick=()=>{let blob=new Blob([JSON.stringify({saved:st.saved,scores:st.scores,logs:st.logs},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nexus-playground-data.json";a.click();URL.revokeObjectURL(url);toast("エクスポートを開始したよ")};
+function expressiveConfirm({title,message,confirmLabel="OK",cancelLabel="キャンセル"}={}){return new Promise(resolve=>{const root=$("#nexusDialogRoot");root.hidden=false;root.innerHTML='<div class="nexus-dialog-backdrop" data-dialog-backdrop><section class="nexus-dialog" role="alertdialog" aria-modal="true" aria-labelledby="nexusDialogTitle" aria-describedby="nexusDialogMessage"><div class="nexus-dialog-mark" aria-hidden="true">!</div><h2 id="nexusDialogTitle"></h2><p id="nexusDialogMessage"></p><div class="nexus-dialog-actions"><button type="button" class="nexus-dialog-cancel" data-dialog-cancel></button><button type="button" class="nexus-dialog-confirm" data-dialog-confirm></button></div></section></div>';$("#nexusDialogTitle").textContent=title;$("#nexusDialogMessage").textContent=message;root.querySelector("[data-dialog-cancel]").textContent=cancelLabel;root.querySelector("[data-dialog-confirm]").textContent=confirmLabel;const cancel=root.querySelector("[data-dialog-cancel]"),yes=root.querySelector("[data-dialog-confirm]"),backdrop=root.querySelector("[data-dialog-backdrop]");let settled=false;function finish(value){if(settled)return;settled=true;root.hidden=true;root.innerHTML="";document.removeEventListener("keydown",key);resolve(value)}function key(e){if(e.key==="Escape"){e.preventDefault();finish(false)}if(e.key==="Tab"){const list=[cancel,yes];if(e.shiftKey&&document.activeElement===cancel){e.preventDefault();yes.focus()}else if(!e.shiftKey&&document.activeElement===yes){e.preventDefault();cancel.focus()}}}cancel.onclick=()=>finish(false);yes.onclick=()=>finish(true);backdrop.onclick=e=>{if(e.target===backdrop)finish(false)};document.addEventListener("keydown",key);yes.focus()})}
 function switchState(el,v){el.classList.toggle("on",v);el.setAttribute("aria-checked",String(v))}
 $("#darkswitch").onclick=()=>{st.theme=st.theme==="dark"?"light":"dark";applyTheme();save()};$("#motionswitch").onclick=()=>{st.motion=!st.motion;switchState($("#motionswitch"),st.motion);save()};$("#toastSwitch").onclick=()=>{st.toasts=!st.toasts;switchState($("#toastSwitch"),st.toasts);save();if(st.toasts)toast("通知を有効にしたよ")};
-$("#clearData").onclick=()=>{if(!confirm("このブラウザに保存したスコア、設定、ライブラリをすべて削除します。よろしいですか？"))return;localStorage.removeItem(KEY);st={theme:"light",activity:0,aiCount:0,gameCount:0,labCount:0,scores:{reaction:0,clicker:0,ttt:0},saved:[],logs:[],motion:true,toasts:true};applyTheme();switchState($("#motionswitch"),true);switchState($("#toastSwitch"),true);stats();renderLogs();renderLibrary();toast("保存データをリセットしたよ")};
+$("#clearData").onclick=async()=>{const ok=await expressiveConfirm({title:"保存データをリセット？",message:"このブラウザに保存したスコア、設定、ライブラリをすべて削除します。この操作は元に戻せません。",confirmLabel:"すべて削除",cancelLabel:"キャンセル"});if(!ok)return;localStorage.removeItem(KEY);st={theme:"light",activity:0,aiCount:0,gameCount:0,labCount:0,scores:{reaction:0,clicker:0,ttt:0},saved:[],logs:[],motion:true,toasts:true};applyTheme();switchState($("#motionswitch"),true);switchState($("#toastSwitch"),true);stats();renderLogs();renderLibrary();toast("保存データをリセットしたよ")};
 applyTheme();switchState($("#motionswitch"),st.motion);switchState($("#toastSwitch"),st.toasts);stats();renderLogs();updateLab();buildPrompt();renderLibrary();
 })();
 </script></body></html>
