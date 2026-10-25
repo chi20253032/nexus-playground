@@ -288,6 +288,28 @@ a:hover{text-decoration-thickness:2px}
 <section class="page" id="page-settings"><div class="intro"><div><div class="eyebrow">⚙ MAKE IT COMFORTABLE</div><h1>設定</h1><p>自分の使い方に合わせてカスタマイズ。</p></div></div><div class="grid settingsgrid"><div class="card"><h3>表示とテーマ</h3><div class="settingrow"><div><strong>ダークモード</strong><small>暗い配色に切り替える</small></div><button class="switch" id="darkswitch" role="switch" aria-checked="false"></button></div><div class="settingrow"><div><strong>アニメーション</strong><small>画面遷移やホバーの動き</small></div><button class="switch on" id="motionswitch" role="switch" aria-checked="true"></button></div><div class="settingrow"><div><strong>通知メッセージ</strong><small>操作完了を知らせる</small></div><button class="switch on" id="toastSwitch" role="switch" aria-checked="true"></button></div></div><div class="card"><h3>データとプライバシー</h3><div class="settingrow"><div><strong>ローカル保存</strong><small>設定・スコア・ライブラリ</small></div><span class="tag live">有効</span></div><div class="settingrow"><div><strong>AI API接続</strong><small>現在はデモモード</small></div><span class="tag">未接続</span></div><div class="settingrow"><div><strong>保存データを削除</strong><small>このブラウザのデータを初期化</small></div><button class="btn outline small" id="clearData">リセット</button></div></div><div class="card" style="grid-column:1/-1"><h3>このサイトについて</h3><p class="muted" style="font-size:12px">NEXUS Playground — AI・ゲーム・実験のための小さな宇宙。Material 3 Expressiveの考え方に着想を得たオリジナル実装で、Google公式製品ではありません。</p><div class="chips"><span class="tag">V1.0.0</span><span class="tag">VANILLA HTML/CSS/JS</span><span class="tag">GITHUB PAGES READY</span></div></div></div></section>
 <footer class="footer"><span>© 2026 NEXUS Playground · Built for curious minds.</span><span>Material 3 Expressive inspired · <a href="https://m3.material.io/" target="_blank" rel="noopener" style="color:var(--p)">Design principles ↗</a></span></footer></div></main>
 <nav class="mobilenav"><button class="active" data-page="home"><span class="ico">⌂</span>ホーム</button><button data-page="ai"><span class="ico">✳</span>AIラボ</button><button data-page="games"><span class="ico">♟</span>ゲーム</button><button data-page="lab"><span class="ico">◈</span>実験室</button><button data-page="library"><span class="ico">▤</span>保存</button></nav><div id="nexusDialogRoot" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+<style id="nexus-expressive-popovers">
+/* Accessible, expressive in-page replacement for browser-owned select menus. */
+.nexus-native-select{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;min-height:0!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;opacity:0!important;pointer-events:none!important}
+.nexus-select-wrap{position:relative;width:100%;min-width:0}
+.nexus-select-trigger{width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;border:1px solid var(--line);border-radius:18px;background:var(--s);color:var(--ink);padding:12px 15px;font:inherit;font-size:12px;font-weight:650;cursor:pointer;transition:border-color .18s,background .18s,box-shadow .18s}
+.nexus-select-trigger:hover{background:var(--s2);border-color:var(--p)}
+.nexus-select-trigger:focus-visible{outline:3px solid var(--p);outline-offset:3px}
+.nexus-select-trigger[aria-expanded=true]{border-color:var(--p);box-shadow:0 0 0 3px color-mix(in srgb,var(--p) 15%,transparent)}
+.nexus-select-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nexus-select-chevron{flex:0 0 auto;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--p);transition:transform .2s}
+.nexus-select-trigger[aria-expanded=true] .nexus-select-chevron{transform:rotate(180deg)}
+.nexus-select-menu{position:fixed;z-index:1000;min-width:180px;max-width:min(420px,calc(100vw - 24px));max-height:min(340px,calc(100vh - 24px));overflow:auto;padding:7px;border:1px solid var(--line);border-radius:23px;background:var(--s);color:var(--ink);box-shadow:0 16px 48px #211a2c26,0 3px 10px #211a2c0d;transform-origin:top center;animation:nexus-menu-in .16s cubic-bezier(.2,.8,.2,1)}
+.nexus-select-menu[hidden]{display:none}
+@keyframes nexus-menu-in{from{opacity:0;transform:translateY(-5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.nexus-select-option{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:0;border-radius:16px;padding:11px 12px;background:transparent;color:var(--ink);font:inherit;font-size:12px;line-height:1.45;cursor:pointer}
+.nexus-select-option:hover,.nexus-select-option:focus-visible{background:var(--s2);outline:none}
+.nexus-select-option[aria-selected=true]{background:var(--sc);font-weight:800}
+.nexus-select-check{margin-left:auto;flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--p);color:var(--onp);opacity:0;transform:scale(.7);transition:opacity .15s,transform .15s;font-size:12px}
+.nexus-select-option[aria-selected=true] .nexus-select-check{opacity:1;transform:scale(1)}
+@media(prefers-reduced-motion:reduce){.nexus-select-menu{animation:none}.nexus-select-trigger,.nexus-select-chevron,.nexus-select-check{transition:none}}
+</style>
+
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s)),KEY="nexus-playground-v1";
@@ -347,6 +369,99 @@ function expressiveConfirm({title,message,confirmLabel="OK",cancelLabel="キャ�
 function switchState(el,v){el.classList.toggle("on",v);el.setAttribute("aria-checked",String(v))}
 $("#darkswitch").onclick=()=>{st.theme=st.theme==="dark"?"light":"dark";applyTheme();save()};$("#motionswitch").onclick=()=>{st.motion=!st.motion;switchState($("#motionswitch"),st.motion);save()};$("#toastSwitch").onclick=()=>{st.toasts=!st.toasts;switchState($("#toastSwitch"),st.toasts);save();if(st.toasts)toast("通知を有効にしたよ")};
 $("#clearData").onclick=async()=>{const ok=await expressiveConfirm({title:"保存データをリセット？",message:"このブラウザに保存したスコア、設定、ライブラリをすべて削除します。この操作は元に戻せません。",confirmLabel:"すべて削除",cancelLabel:"キャンセル"});if(!ok)return;localStorage.removeItem(KEY);st={theme:"light",activity:0,aiCount:0,gameCount:0,labCount:0,scores:{reaction:0,clicker:0,ttt:0},saved:[],logs:[],motion:true,toasts:true};applyTheme();switchState($("#motionswitch"),true);switchState($("#toastSwitch"),true);stats();renderLogs();renderLibrary();toast("保存データをリセットしたよ")};
+/* Accessible in-page replacement for native <select> popups. The original select remains the source of truth. */
+function initExpressiveSelects(){
+ const selects=$('select:not([data-native-popup="keep"])');
+ selects.forEach((select,index)=>{
+  if(select.dataset.expressiveReady)return;
+  select.dataset.expressiveReady='true';
+  const id=select.id||('nexus-select-'+index);if(!select.id)select.id=id;
+  const label=document.querySelector('label[for="'+CSS.escape(id)+'"]');
+  const labelText=label?label.textContent.trim():(select.getAttribute('aria-label')||'選択');
+  const wrap=document.createElement('div');wrap.className='nexus-select-wrap';
+  const trigger=document.createElement('button');trigger.type='button';trigger.className='nexus-select-trigger';
+  trigger.id=id+'-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+  trigger.setAttribute('aria-label',labelText);trigger.setAttribute('aria-controls',id+'-menu');
+  trigger.innerHTML='<span class="nexus-select-value"></span><span class="nexus-select-chevron" aria-hidden="true">⌄</span>';
+  const value=trigger.querySelector('.nexus-select-value');
+  const menu=document.createElement('div');menu.className='nexus-select-menu';menu.id=id+'-menu';menu.setAttribute('role','listbox');menu.setAttribute('aria-label',labelText);menu.hidden=true;
+  const originalParent=select.parentNode;originalParent.insertBefore(wrap,select);wrap.appendChild(trigger);wrap.appendChild(select);
+  select.classList.add('nexus-native-select');select.setAttribute('aria-hidden','true');select.tabIndex=-1;
+  if(label)label.htmlFor=trigger.id;
+  let open=false,active=-1,typeBuffer='',typeTimer=null;
+  const options=()=>Array.from(select.options).filter(o=>!o.disabled);
+  function sync(){
+   const chosen=select.options[select.selectedIndex];value.textContent=chosen?chosen.textContent.trim():'選択してください';
+   trigger.setAttribute('aria-label',labelText+'：'+value.textContent);
+   menu.querySelectorAll('[role=option]').forEach((el,i)=>{const o=options()[i];el.setAttribute('aria-selected',String(!!o&&o.value===select.value))});
+  }
+  function position(){
+   const r=trigger.getBoundingClientRect(),gap=7,maxH=Math.min(340,window.innerHeight-24);
+   menu.style.minWidth=Math.min(Math.max(r.width,210),window.innerWidth-24)+'px';menu.style.maxHeight=maxH+'px';
+   const below=window.innerHeight-r.bottom,above=r.top,estimated=Math.min(menu.scrollHeight||options().length*46+14,maxH);
+   let top=(below>=Math.min(estimated+gap,180)||below>=above)?r.bottom+gap:r.top-Math.min(estimated,maxH)-gap;
+   top=Math.max(12,Math.min(top,window.innerHeight-maxH-12));
+   menu.style.top=top+'px';menu.style.left=Math.max(12,Math.min(r.left,window.innerWidth-menu.offsetWidth-12))+'px';
+  }
+  function focusOption(i){
+   const els=Array.from(menu.querySelectorAll('[role=option]'));if(!els.length)return;
+   active=(i+els.length)%els.length;els.forEach((el,j)=>el.tabIndex=j===active?0:-1);els[active].focus({preventScroll:true});els[active].scrollIntoView({block:'nearest'});
+  }
+  function close(restore=true){
+   if(!open)return;open=false;menu.hidden=true;trigger.setAttribute('aria-expanded','false');
+   document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',globalKey,true);
+   window.removeEventListener('resize',position);window.removeEventListener('scroll',position,true);
+   if(restore)trigger.focus({preventScroll:true});
+  }
+  function choose(i){
+   const o=options()[i];if(!o)return;select.value=o.value;
+   select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));sync();close(true);
+  }
+  function outside(e){if(!wrap.contains(e.target)&&!menu.contains(e.target))close(false)}
+  function globalKey(e){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close(true)}}
+  function openMenu(which='selected'){
+   if(open)return;open=true;menu.hidden=false;trigger.setAttribute('aria-expanded','true');
+   active=options().findIndex(o=>o.value===select.value);if(which==='first')active=0;else if(which==='last')active=options().length-1;
+   document.body.appendChild(menu);position();document.addEventListener('pointerdown',outside,true);
+   document.addEventListener('keydown',globalKey,true);window.addEventListener('resize',position);window.addEventListener('scroll',position,true);
+   focusOption(active>=0?active:0);
+  }
+  options().forEach((option,i)=>{
+   const item=document.createElement('div');item.className='nexus-select-option';item.setAttribute('role','option');item.dataset.index=String(i);item.tabIndex=-1;
+   const text=document.createElement('span');text.textContent=option.textContent.trim();item.appendChild(text);
+   const check=document.createElement('span');check.className='nexus-select-check';check.setAttribute('aria-hidden','true');check.textContent='✓';item.appendChild(check);
+   item.addEventListener('pointerdown',e=>e.preventDefault());item.addEventListener('click',()=>choose(i));
+   item.addEventListener('mousemove',()=>{active=i;menu.querySelectorAll('[role=option]').forEach((el,j)=>el.tabIndex=j===i?0:-1)});
+   menu.appendChild(item);
+  });
+  trigger.addEventListener('click',()=>open?close(false):openMenu());
+  trigger.addEventListener('keydown',e=>{
+   if(['ArrowDown','ArrowUp','Enter',' '].includes(e.key)){e.preventDefault();openMenu(e.key==='ArrowUp'?'last':e.key==='ArrowDown'?'first':'selected');return}
+   if(e.key==='Home'){e.preventDefault();openMenu('first')}else if(e.key==='End'){e.preventDefault();openMenu('last')}
+   else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    typeBuffer+=e.key.toLocaleLowerCase();clearTimeout(typeTimer);typeTimer=setTimeout(()=>typeBuffer='',700);
+    const idx=options().findIndex(o=>o.textContent.trim().toLocaleLowerCase().startsWith(typeBuffer));
+    if(idx>=0){openMenu();focusOption(idx)}
+   }
+  });
+  menu.addEventListener('keydown',e=>{
+   const n=options().length;
+   if(e.key==='ArrowDown'){e.preventDefault();focusOption(active+1)}
+   else if(e.key==='ArrowUp'){e.preventDefault();focusOption(active-1)}
+   else if(e.key==='Home'){e.preventDefault();focusOption(0)}
+   else if(e.key==='End'){e.preventDefault();focusOption(n-1)}
+   else if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(active)}
+   else if(e.key==='Tab'){close(false)}
+   else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    typeBuffer+=e.key.toLocaleLowerCase();clearTimeout(typeTimer);typeTimer=setTimeout(()=>typeBuffer='',700);
+    const idx=options().findIndex(o=>o.textContent.trim().toLocaleLowerCase().startsWith(typeBuffer));if(idx>=0)focusOption(idx)
+   }
+  });
+  select.addEventListener('change',sync);sync();
+ });
+}
+
+initExpressiveSelects();
 applyTheme();switchState($("#motionswitch"),st.motion);switchState($("#toastSwitch"),st.toasts);stats();renderLogs();updateLab();buildPrompt();renderLibrary();
 })();
 </script></body></html>
