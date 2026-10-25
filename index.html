@@ -474,6 +474,34 @@ function initExpressiveSelects(){
  });
 }
 
+function initExpressiveContextMenu(){
+ if(document.getElementById('nexusContextMenu'))return;
+ const menu=document.createElement('div');menu.id='nexusContextMenu';menu.className='nexus-context-menu';menu.hidden=true;menu.setAttribute('role','menu');menu.setAttribute('aria-label','NEXUS クイックメニュー');document.body.appendChild(menu);
+ let anchor=null,longTimer=null,longStart=null,suppressClickUntil=0;
+ const editable=el=>!!el?.closest('input,textarea,select,[contenteditable="true"],[role="textbox"],.nexus-select-trigger,button');
+ const selected=()=>String(window.getSelection()?.toString()||'').trim();
+ function close(restore=false){if(menu.hidden)return;menu.hidden=true;menu.replaceChildren();document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',keys,true);window.removeEventListener('resize',closeMove);window.removeEventListener('scroll',closeMove,true);if(restore&&anchor?.isConnected)anchor.focus({preventScroll:true})}
+ function outside(e){if(!menu.contains(e.target))close(false)}
+ function closeMove(){close(false)}
+ function keys(e){if(e.key==='Escape'){e.preventDefault();close(true)}else if(e.key==='Tab')close(false);else if(e.key==='ArrowDown'||e.key==='ArrowUp'){const a=[...menu.querySelectorAll('[role=menuitem]:not(:disabled)')];if(!a.length)return;e.preventDefault();const i=a.indexOf(document.activeElement);a[(i+(e.key==='ArrowDown'?1:-1)+a.length)%a.length].focus()}}
+ async function copy(text,msg='コピーしました'){if(!text){toast('コピーする内容がありません');return}try{await navigator.clipboard.writeText(text);toast(msg)}catch(e){const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{toast(document.execCommand('copy')?msg:'コピーできませんでした')}catch(_){toast('コピーできませんでした')}t.remove()}}
+ function item(icon,label,fn){const b=document.createElement('button');b.type='button';b.className='nexus-context-action';b.setAttribute('role','menuitem');const i=document.createElement('span');i.className='nexus-context-icon';i.setAttribute('aria-hidden','true');i.textContent=icon;const t=document.createElement('span');t.textContent=label;b.append(i,t);b.addEventListener('click',()=>{close();try{fn()}catch(e){toast('操作を実行できませんでした')}});menu.appendChild(b)}
+ function sep(){const d=document.createElement('div');d.className='nexus-context-separator';d.setAttribute('role','separator');menu.appendChild(d)}
+ function openAt(x,y,el){close();anchor=document.activeElement;menu.replaceChildren();const h=document.createElement('div');h.className='nexus-context-heading';h.textContent='NEXUS · クイック操作';menu.appendChild(h);
+ const text=selected(),link=el?.closest?.('a[href]');if(text)item('▣','選択テキストをコピー',()=>copy(text));
+ if(link){item('↗','リンクを新しいタブで開く',()=>window.open(link.href,'_blank','noopener'));item('⌁','リンク先をコピー',()=>copy(link.href,'リンク先をコピーしました'))}
+ item('⤴','ページを再読み込み',()=>location.reload());item('⌂','ページの先頭へ',()=>window.scrollTo({top:0,behavior:st.motion?'smooth':'auto'}));item('↓','ページの末尾へ',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:st.motion?'smooth':'auto'}));item('⧉','ページURLをコピー',()=>copy(location.href,'URLをコピーしました'));
+ item('▤','ページ内をすべて選択',()=>{const r=document.createRange();r.selectNodeContents(document.body);const q=window.getSelection();q.removeAllRanges();q.addRange(r)});
+ sep();item(st.theme==='dark'?'☀':'☾',st.theme==='dark'?'ライトテーマに切り替え':'ダークテーマに切り替え',()=>{st.theme=st.theme==='dark'?'light':'dark';save();applyTheme();toast('テーマを切り替えました')});
+ menu.hidden=false;menu.style.visibility='hidden';menu.style.left='0px';menu.style.top='0px';const w=menu.offsetWidth,hgt=menu.offsetHeight;menu.style.left=Math.max(10,Math.min(x,innerWidth-w-10))+'px';menu.style.top=Math.max(10,Math.min(y,innerHeight-hgt-10))+'px';menu.style.visibility='';
+ document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',keys,true);window.addEventListener('resize',closeMove);window.addEventListener('scroll',closeMove,true);menu.querySelector('[role=menuitem]')?.focus({preventScroll:true})
+ }
+ document.addEventListener('contextmenu',e=>{if(editable(e.target))return;e.preventDefault();openAt(e.clientX,e.clientY,e.target)});
+ document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||editable(e.target))return;longStart={x:e.clientX,y:e.clientY,el:e.target};longTimer=setTimeout(()=>{if(!longStart)return;suppressClickUntil=Date.now()+800;openAt(longStart.x,longStart.y,longStart.el);longStart=null},600)},{passive:true});
+ document.addEventListener('pointermove',e=>{if(longStart&&Math.hypot(e.clientX-longStart.x,e.clientY-longStart.y)>12){clearTimeout(longTimer);longStart=null}},{passive:true});
+ const cancel=()=>{clearTimeout(longTimer);longStart=null};document.addEventListener('pointerup',cancel,{passive:true});document.addEventListener('pointercancel',cancel,{passive:true});
+ document.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopPropagation();suppressClickUntil=0}},true);
+}
 initExpressiveSelects();
 initExpressiveContextMenu();
 applyTheme();switchState($("#motionswitch"),st.motion);switchState($("#toastSwitch"),st.toasts);stats();renderLogs();updateLab();buildPrompt();renderLibrary();
