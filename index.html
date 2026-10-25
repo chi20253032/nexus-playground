@@ -384,7 +384,7 @@ $("#darkswitch").onclick=()=>{st.theme=st.theme==="dark"?"light":"dark";applyThe
 $("#clearData").onclick=async()=>{const ok=await expressiveConfirm({title:"保存データをリセット？",message:"このブラウザに保存したスコア、設定、ライブラリをすべて削除します。この操作は元に戻せません。",confirmLabel:"すべて削除",cancelLabel:"キャンセル"});if(!ok)return;localStorage.removeItem(KEY);st={theme:"light",activity:0,aiCount:0,gameCount:0,labCount:0,scores:{reaction:0,clicker:0,ttt:0},saved:[],logs:[],motion:true,toasts:true};applyTheme();switchState($("#motionswitch"),true);switchState($("#toastSwitch"),true);stats();renderLogs();renderLibrary();toast("保存データをリセットしたよ")};
 /* Accessible in-page replacement for native <select> popups. The original select remains the source of truth. */
 function initExpressiveSelects(){
- const selects=$('select:not([data-native-popup="keep"])');
+ const selects=Array.from(document.querySelectorAll('select:not([data-native-popup="keep"])'));
  selects.forEach((select,index)=>{
   if(select.dataset.expressiveReady)return;
   select.dataset.expressiveReady='true';
