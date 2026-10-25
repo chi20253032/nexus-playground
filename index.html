@@ -311,7 +311,7 @@ a:hover{text-decoration-thickness:2px}
 </style>
 
 <style id="nexus-context-menu-style">
-.nexus-context-menu{position:fixed;z-index:1200;min-width:220px;max-width:min(300px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:22px;background:var(--s);color:var(--ink);box-shadow:0 18px 55px #211a2c30,0 4px 12px #211a2c12;animation:nexus-context-in .14s cubic-bezier(.2,.8,.2,1);transform-origin:top left}
+.nexus-context-menu{position:fixed;z-index:1200;min-width:220px;max-width:min(320px,calc(100vw - 20px));max-height:min(70vh,560px);overflow:auto;padding:8px;border:1px solid var(--line);border-radius:22px;background:var(--s);color:var(--ink);box-shadow:0 18px 55px #211a2c30,0 4px 12px #211a2c12;animation:nexus-context-in .14s cubic-bezier(.2,.8,.2,1);transform-origin:top left}
 .nexus-context-menu[hidden]{display:none}
 @keyframes nexus-context-in{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .nexus-context-heading{padding:9px 12px 6px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
@@ -478,25 +478,61 @@ function initExpressiveContextMenu(){
  if(document.getElementById('nexusContextMenu'))return;
  const menu=document.createElement('div');menu.id='nexusContextMenu';menu.className='nexus-context-menu';menu.hidden=true;menu.setAttribute('role','menu');menu.setAttribute('aria-label','NEXUS クイックメニュー');document.body.appendChild(menu);
  let anchor=null,longTimer=null,longStart=null,suppressClickUntil=0;
- const editable=el=>!!el?.closest('input,textarea,select,[contenteditable="true"],[role="textbox"],.nexus-select-trigger,button');
  const selected=()=>String(window.getSelection()?.toString()||'').trim();
+ const editable=el=>!!el?.closest('input:not([type=button]):not([type=submit]):not([type=checkbox]):not([type=radio]),textarea,[contenteditable="true"],[role="textbox"]');
  function close(restore=false){if(menu.hidden)return;menu.hidden=true;menu.replaceChildren();document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',keys,true);window.removeEventListener('resize',closeMove);window.removeEventListener('scroll',closeMove,true);if(restore&&anchor?.isConnected)anchor.focus({preventScroll:true})}
  function outside(e){if(!menu.contains(e.target))close(false)}
  function closeMove(){close(false)}
  function keys(e){if(e.key==='Escape'){e.preventDefault();close(true)}else if(e.key==='Tab')close(false);else if(e.key==='ArrowDown'||e.key==='ArrowUp'){const a=[...menu.querySelectorAll('[role=menuitem]:not(:disabled)')];if(!a.length)return;e.preventDefault();const i=a.indexOf(document.activeElement);a[(i+(e.key==='ArrowDown'?1:-1)+a.length)%a.length].focus()}}
- async function copy(text,msg='コピーしました'){if(!text){toast('コピーする内容がありません');return}try{await navigator.clipboard.writeText(text);toast(msg)}catch(e){const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{toast(document.execCommand('copy')?msg:'コピーできませんでした')}catch(_){toast('コピーできませんでした')}t.remove()}}
- function item(icon,label,fn){const b=document.createElement('button');b.type='button';b.className='nexus-context-action';b.setAttribute('role','menuitem');const i=document.createElement('span');i.className='nexus-context-icon';i.setAttribute('aria-hidden','true');i.textContent=icon;const t=document.createElement('span');t.textContent=label;b.append(i,t);b.addEventListener('click',()=>{close();try{fn()}catch(e){toast('操作を実行できませんでした')}});menu.appendChild(b)}
+ async function copy(text,msg='コピーしました'){if(!text){toast('コピーする内容がありません');return}try{await navigator.clipboard.writeText(text);toast(msg)}catch(e){const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{toast(document.execCommand('copy')?msg:'ブラウザの設定によりコピーできません')}catch(_){toast('ブラウザの設定によりコピーできません')}t.remove()}}
+ function item(icon,label,fn,disabled=false){const b=document.createElement('button');b.type='button';b.className='nexus-context-action';b.setAttribute('role','menuitem');b.disabled=disabled;const i=document.createElement('span');i.className='nexus-context-icon';i.setAttribute('aria-hidden','true');i.textContent=icon;const t=document.createElement('span');t.textContent=label;b.append(i,t);b.addEventListener('click',()=>{close();if(b.disabled)return;try{fn()}catch(e){toast('この操作は実行できませんでした')}});menu.appendChild(b);return b}
  function sep(){const d=document.createElement('div');d.className='nexus-context-separator';d.setAttribute('role','separator');menu.appendChild(d)}
- function openAt(x,y,el){close();anchor=document.activeElement;menu.replaceChildren();const h=document.createElement('div');h.className='nexus-context-heading';h.textContent='NEXUS · クイック操作';menu.appendChild(h);
- const text=selected(),link=el?.closest?.('a[href]');if(text)item('▣','選択テキストをコピー',()=>copy(text));
- if(link){item('↗','リンクを新しいタブで開く',()=>window.open(link.href,'_blank','noopener'));item('⌁','リンク先をコピー',()=>copy(link.href,'リンク先をコピーしました'))}
- item('⤴','ページを再読み込み',()=>location.reload());item('⌂','ページの先頭へ',()=>window.scrollTo({top:0,behavior:st.motion?'smooth':'auto'}));item('↓','ページの末尾へ',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:st.motion?'smooth':'auto'}));item('⧉','ページURLをコピー',()=>copy(location.href,'URLをコピーしました'));
- item('▤','ページ内をすべて選択',()=>{const r=document.createRange();r.selectNodeContents(document.body);const q=window.getSelection();q.removeAllRanges();q.addRange(r)});
- sep();item(st.theme==='dark'?'☀':'☾',st.theme==='dark'?'ライトテーマに切り替え':'ダークテーマに切り替え',()=>{st.theme=st.theme==='dark'?'light':'dark';save();applyTheme();toast('テーマを切り替えました')});
- menu.hidden=false;menu.style.visibility='hidden';menu.style.left='0px';menu.style.top='0px';const w=menu.offsetWidth,hgt=menu.offsetHeight;menu.style.left=Math.max(10,Math.min(x,innerWidth-w-10))+'px';menu.style.top=Math.max(10,Math.min(y,innerHeight-hgt-10))+'px';menu.style.visibility='';
- document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',keys,true);window.addEventListener('resize',closeMove);window.addEventListener('scroll',closeMove,true);menu.querySelector('[role=menuitem]')?.focus({preventScroll:true})
+ function heading(text){const h=document.createElement('div');h.className='nexus-context-heading';h.textContent=text;menu.appendChild(h)}
+ function openAt(x,y,el){
+  close();anchor=document.activeElement;menu.replaceChildren();
+  const field=el?.closest?.('input,textarea,[contenteditable="true"],[role="textbox"]');
+  const button=el?.closest?.('button,[role="button"],input[type="button"],input[type="submit"]');
+  const selectTrigger=el?.closest?.('.nexus-select-trigger');
+  const link=el?.closest?.('a[href]');
+  const isPassword=field?.matches?.('input[type="password"]');
+  const isCheck=field?.matches?.('input[type="checkbox"],input[type="radio"]');
+  if(field){
+   heading(isPassword?'NEXUS · セキュリティ': 'NEXUS · テキスト編集');
+   const isNativeText=field instanceof HTMLInputElement||field instanceof HTMLTextAreaElement;
+   const hasSelection=(()=>{try{return field.selectionStart!==field.selectionEnd}catch(e){return !!selected()}})();
+   if(isPassword){
+    item('▣','パスワード欄を選択',()=>field.select());
+    item('⌫','入力内容を消去',()=>{field.value='';field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));field.focus()});
+   }else{
+    const value=isNativeText?field.value:(field.innerText||field.textContent||'');
+    item('▤','すべて選択',()=>{field.focus();if(isNativeText&&typeof field.select==='function')field.select();else{const r=document.createRange();r.selectNodeContents(field);const q=window.getSelection();q.removeAllRanges();q.addRange(r)}});
+    item('▣','選択部分をコピー',()=>{let text='';try{text=field.value.slice(field.selectionStart,field.selectionEnd)}catch(e){text=selected()}copy(text)},!hasSelection);
+    const canEdit=!(field instanceof HTMLInputElement&&['button','submit','reset','checkbox','radio','file','color','range'].includes(field.type))&&!field.readOnly&&!field.disabled;
+    item('✂','切り取り',()=>{let text='';try{text=field.value.slice(field.selectionStart,field.selectionEnd)}catch(e){text=selected()}if(!text)return;copy(text,'切り取りました');if(isNativeText){const a=field.selectionStart,b=field.selectionEnd;field.setRangeText('',a,b,'start');field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}))}else document.execCommand('delete');field.focus()},!canEdit||!hasSelection||isPassword);
+    item('▣','貼り付け',async()=>{try{const text=await navigator.clipboard.readText();if(isNativeText&&field.setRangeText){field.setRangeText(text,field.selectionStart,field.selectionEnd,'end');field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}))}else{field.focus();document.execCommand('insertText',false,text)}toast('貼り付けました')}catch(e){toast('貼り付けはブラウザのクリップボード権限が必要です')}},!canEdit||isPassword);
+    sep();item('⌫','入力内容を消去',()=>{if(isNativeText)field.value='';else field.textContent='';field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));field.focus()},!canEdit||!value);
+   }
+   if(isCheck){sep();item('✓',field.checked?'チェックを外す':'チェックを付ける',()=>{field.checked=!field.checked;field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}))})}
+  }else if(selectTrigger){
+   heading('NEXUS · 選択メニュー');const native=selectTrigger.parentElement?.querySelector('select');
+   item('⌄','選択肢を開く',()=>selectTrigger.click());
+   if(native){item('↑','前の選択肢',()=>{native.selectedIndex=Math.max(0,native.selectedIndex-1);native.dispatchEvent(new Event('change',{bubbles:true}))},native.selectedIndex<=0);item('↓','次の選択肢',()=>{native.selectedIndex=Math.min(native.options.length-1,native.selectedIndex+1);native.dispatchEvent(new Event('change',{bubbles:true}))},native.selectedIndex>=native.options.length-1)}
+  }else if(button){
+   heading('NEXUS · ボタン操作');const label=(button.innerText||button.value||button.getAttribute('aria-label')||'ボタン').trim().replace(/\s+/g,' ').slice(0,54);
+   item('↵','「'+label+'」を実行',()=>button.click(),button.disabled||button.getAttribute('aria-disabled')==='true');
+   item('▣','ボタン名をコピー',()=>copy(label,'ボタン名をコピーしました'),!label);
+   const title=button.getAttribute('title');if(title)item('ⓘ','説明：'+title,()=>toast(title));
+  }else if(link){
+   heading('NEXUS · リンク操作');item('↗','リンクを新しいタブで開く',()=>window.open(link.href,'_blank','noopener'));item('⌁','リンク先をコピー',()=>copy(link.href,'リンク先をコピーしました'));item('▣','リンク文字列をコピー',()=>copy((link.innerText||link.getAttribute('aria-label')||link.href).trim()));
+  }else{
+   heading('NEXUS · クイック操作');const text=selected();if(text)item('▣','選択したテキストをコピー',()=>copy(text));
+   item('⤴','ページを再読み込み',()=>location.reload());item('⌂','ページの先頭へ',()=>window.scrollTo({top:0,behavior:st.motion?'smooth':'auto'}));item('↓','ページの末尾へ',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:st.motion?'smooth':'auto'}));item('⧉','ページURLをコピー',()=>copy(location.href,'URLをコピーしました'));item('▤','ページ内をすべて選択',()=>{const r=document.createRange();r.selectNodeContents(document.body);const q=window.getSelection();q.removeAllRanges();q.addRange(r)});
+  }
+  sep();item(st.theme==='dark'?'☀':'☾',st.theme==='dark'?'ライトテーマに切り替え':'ダークテーマに切り替え',()=>{st.theme=st.theme==='dark'?'light':'dark';save();applyTheme();toast('テーマを切り替えました')});
+  menu.hidden=false;menu.style.visibility='hidden';menu.style.left='0px';menu.style.top='0px';const w=menu.offsetWidth,h=menu.offsetHeight;menu.style.left=Math.max(10,Math.min(x,innerWidth-w-10))+'px';menu.style.top=Math.max(10,Math.min(y,innerHeight-h-10))+'px';menu.style.visibility='';
+  document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',keys,true);window.addEventListener('resize',closeMove);window.addEventListener('scroll',closeMove,true);menu.querySelector('[role="menuitem"]:not(:disabled)')?.focus({preventScroll:true})
  }
- document.addEventListener('contextmenu',e=>{if(editable(e.target))return;e.preventDefault();openAt(e.clientX,e.clientY,e.target)});
+ document.addEventListener('contextmenu',e=>{e.preventDefault();openAt(e.clientX,e.clientY,e.target)});
  document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||editable(e.target))return;longStart={x:e.clientX,y:e.clientY,el:e.target};longTimer=setTimeout(()=>{if(!longStart)return;suppressClickUntil=Date.now()+800;openAt(longStart.x,longStart.y,longStart.el);longStart=null},600)},{passive:true});
  document.addEventListener('pointermove',e=>{if(longStart&&Math.hypot(e.clientX-longStart.x,e.clientY-longStart.y)>12){clearTimeout(longTimer);longStart=null}},{passive:true});
  const cancel=()=>{clearTimeout(longTimer);longStart=null};document.addEventListener('pointerup',cancel,{passive:true});document.addEventListener('pointercancel',cancel,{passive:true});
