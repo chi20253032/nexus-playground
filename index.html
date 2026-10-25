@@ -310,6 +310,19 @@ a:hover{text-decoration-thickness:2px}
 @media(prefers-reduced-motion:reduce){.nexus-select-menu{animation:none}.nexus-select-trigger,.nexus-select-chevron,.nexus-select-check{transition:none}}
 </style>
 
+<style id="nexus-context-menu-style">
+.nexus-context-menu{position:fixed;z-index:1200;min-width:220px;max-width:min(300px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:22px;background:var(--s);color:var(--ink);box-shadow:0 18px 55px #211a2c30,0 4px 12px #211a2c12;animation:nexus-context-in .14s cubic-bezier(.2,.8,.2,1);transform-origin:top left}
+.nexus-context-menu[hidden]{display:none}
+@keyframes nexus-context-in{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.nexus-context-heading{padding:9px 12px 6px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.nexus-context-action{display:flex;width:100%;align-items:center;gap:12px;padding:11px 12px;border:0;border-radius:14px;background:transparent;color:var(--ink);text-align:left;font:inherit;font-size:12px;cursor:pointer}
+.nexus-context-action:hover,.nexus-context-action:focus-visible{outline:none;background:var(--s2)}
+.nexus-context-action:disabled{opacity:.4;cursor:not-allowed}
+.nexus-context-icon{display:grid;place-items:center;flex:0 0 27px;width:27px;height:27px;border-radius:10px;background:var(--sc);color:var(--p);font-size:14px}
+.nexus-context-separator{height:1px;margin:5px 8px;background:var(--line)}
+@media(prefers-reduced-motion:reduce){.nexus-context-menu{animation:none}}
+</style>
+
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s)),KEY="nexus-playground-v1";
@@ -462,6 +475,7 @@ function initExpressiveSelects(){
 }
 
 initExpressiveSelects();
+initExpressiveContextMenu();
 applyTheme();switchState($("#motionswitch"),st.motion);switchState($("#toastSwitch"),st.toasts);stats();renderLogs();updateLab();buildPrompt();renderLibrary();
 })();
 </script></body></html>
